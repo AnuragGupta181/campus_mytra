@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
+import explain1 from '../assets/bg/explain1.mp4';
+import explain2 from '../assets/bg/explain2.mp4';
 
 const PERKS = [
   { icon: '🎨', title: 'Custom App Icon', desc: 'Get a personalized app icon with your photo or campus branding.' },
   { icon: '🏷️', title: 'Exclusive Banner', desc: 'Your name on a custom banner featured inside the app.' },
-  { icon: '⚡', title: 'Early Access', desc: 'Play new challenges weeks before public release.' },
+  { icon: '⚡', title: 'Light and Dark Mode', desc: 'Switch between light and dark themes based on your preference.' },
   { icon: '🏆', title: 'Beta Badge', desc: 'A permanent beta tester badge on your profile.' },
 ];
 
@@ -64,7 +66,7 @@ export default function BetaSection() {
           </p>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="grid gap-22 lg:grid-cols-[2.2fr_0.7fr] sm:grid-rows-[2.2fr_2.1fr]  lg:items-center">
           <div ref={leftRef} className="scroll-fade grid gap-4 sm:grid-cols-2">
             {PERKS.map((perk) => (
               <div
@@ -84,37 +86,9 @@ export default function BetaSection() {
             </div>
           </div>
 
-          <div
-            ref={rightRef}
-            className="scroll-fade relative overflow-hidden rounded-[1.75rem] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.5)]"
-          >
-            <div
-              className="absolute inset-0"
-              style={{
-                background: 'linear-gradient(135deg, #1e1b4b 0%, #2e1065 25%, #4c1d95 50%, #1e3a8a 75%, #0f172a 100%)',
-              }}
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(255,255,255,0.04)_50%,transparent_70%)]" />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
-                backgroundSize: '40px 40px',
-              }}
-            />
-            <div className="relative aspect-square flex items-center justify-center p-8">
-              <div className="grid place-items-center gap-3">
-                <div
-                  className="flex h-16 w-16 items-center justify-center rounded-2xl text-3xl text-white shadow-[0_8px_30px_rgba(124,58,237,0.4)]"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}
-                >
-                  CM
-                </div>
-                <div className="text-xs uppercase tracking-[0.12em] text-slate-300">
-                  Custom Work — Coming Soon
-                </div>
-              </div>
-            </div>
+          <div ref={rightRef} className="scroll-fade relative overflow-hidden flex items-center justify-center">
+            <video autoPlay muted controls src={explain1} className="w-full h-auto object-contain" />
+            {/* <video controls src={explain2} className="w-32 h-32 object-cover rounded-lg" /> */}
           </div>
         </div>
       </div>
