@@ -24,6 +24,22 @@ export default function FeedbackSection() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !rating) return;
+
+    const recipient = 'karmatechis01@gmail.com';
+    const subject = encodeURIComponent(`Campus Mytra Feedback from ${form.name}`);
+    const bodyLines = [
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      `Rating: ${rating}/5`,
+      `Feedback:`,
+      `${form.message || '[No message provided]'}`,
+    ];
+    const body = encodeURIComponent(bodyLines.join('\n'));
+
+    // Open Gmail compose in new tab with prefilled feedback
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${subject}&body=${body}`;
+    window.open(gmailUrl, '_blank');
+
     setSubmitted(true);
   };
 

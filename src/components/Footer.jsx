@@ -25,7 +25,7 @@ export default function Footer() {
           <div className="p-3 rounded-full bg-white/5 border border-white/10 hover:border-purple-500/50 transition-colors">
             <FaEnvelope size={24} />
           </div>
-          <span>hello@ka-arma.com</span>
+          <span>karmatechis01@gmail.com</span>
         </a>
 
         {/* <a 
