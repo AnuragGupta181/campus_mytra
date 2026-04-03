@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dsaImg from "../assets/dsa_challenge.jpeg";
 import chessImg from "../assets/chess_challenge.jpeg";
 import unoImg from "../assets/uno_challenge.jpeg";
+import diet from "../assets/dietplan.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,14 @@ const challenges = [
     image: unoImg,
     gradient: "from-purple-500 to-indigo-600",
   },
+  {
+    id: 3,
+    title: "Fitness Buddy",
+    description:
+    "Your personal fitness companion on campus. Set goals, track workouts, and join challenges with friends. From cardio to strength training, create diet plans, log meals, and stay motivated with a supportive community. Achieve your fitness goals together with Fitness Buddy.",
+    image: diet,
+    gradient: "from-green-500 to-teal-500",
+  }
 ];
 
 export default function ScrollStack() {
@@ -40,6 +49,7 @@ export default function ScrollStack() {
   const pinRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const mainTriggerRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -58,9 +68,10 @@ export default function ScrollStack() {
       end: `+=${window.innerHeight * (challenges.length - 1)}`,
       pin: pin,
       pinSpacing: true,
-      scrub: 0.5,
+      scrub: 0.7,
       onUpdate: (self) => {
         const progress = self.progress;
+        setScrollProgress(progress);
         const newIndex = Math.min(
           Math.floor(progress * challenges.length),
           challenges.length - 1
@@ -183,12 +194,11 @@ export default function ScrollStack() {
           ))}
         </div>
 
-        {/* Scroll Progress Bar */}
         <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1a1a2e]">
           <motion.div
             className="h-full bg-gradient-to-r from-violet-600 to-purple-500"
             initial={{ width: "0%" }}
-            animate={{ width: `${((activeIndex + 1) / challenges.length) * 100}%` }}
+            animate={{ width: `${scrollProgress * 100}%` }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           />
         </div>
