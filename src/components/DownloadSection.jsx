@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ColorBends from './ColorBends';
+import { supabase } from '../lib/supabase';
+import androidIcon from '../assets/android.png';
 
 const SIZE_INFO = [
   { label: 'APK Size', value: '~80 MB' },
@@ -19,6 +21,11 @@ const CHIP_INFO = [
 
 export default function DownloadSection() {
   const [showGuide, setShowGuide] = useState(false);
+  const [showPreRegister, setShowPreRegister] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [error, setError] = useState('');
   const headRef = useRef(null);
 
   useEffect(() => {
@@ -31,6 +38,66 @@ export default function DownloadSection() {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+  const handlePreRegisterClick = () => {
+    setShowPreRegister(true);
+    setSubmitSuccess(false);
+    setError('');
+    setFormData({ name: '', email: '' });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    // Validate form
+    if (!formData.name.trim() || !formData.email.trim()) {
+      setError('Please fill in all fields');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      // Save to Supabase
+      const { data, error: supabaseError } = await supabase
+        .from('pre_registrations')
+        .insert([
+          {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            registered_at: new Date().toISOString(),
+          }
+        ]);
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+
+      // Show success message
+      setSubmitSuccess(true);
+      setFormData({ name: '', email: '' });
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError(err.message || 'Failed to submit. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setError('');
+  };
 
   return (
     <>
@@ -96,14 +163,18 @@ export default function DownloadSection() {
           </p>
 
           {/* Main download button */}
-          <a href="#" className="btn-silver-glass" style={{ fontSize: '16px', padding: '16px 48px' }}>
+          <button 
+            onClick={handlePreRegisterClick}
+            className="btn-silver-glass" 
+            style={{ fontSize: '16px', padding: '16px 48px', cursor: 'pointer' }}
+          >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Download APK Free <img src="src/assets/android.png" alt="android " style={{ width: '35px', height: '40px' }} />
-          </a>
+            Download APK Free <img src={androidIcon} alt="Android" style={{ width: '24px', height: '24px', marginLeft: '8px', verticalAlign: 'middle' }} />
+          </button>
 
           {/* Size guide link */}
           <div style={{ marginTop: '20px' }}>
@@ -186,7 +257,7 @@ export default function DownloadSection() {
                 border: 'none',
                 color: 'rgba(255,255,255,0.5)',
                 fontSize: '22px',
-                cursor: 'none',
+                cursor: 'pointer',
                 lineHeight: 1,
               }}
             >
@@ -241,6 +312,211 @@ export default function DownloadSection() {
           
         </div>
         
+      )}
+
+      {/* Pre-Registration Modal */}
+      {showPreRegister && (
+        <div
+          className="modal-backdrop"
+          onClick={() => !submitSuccess && setShowPreRegister(false)}
+        >
+          <div
+            className="modal-box"
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth: '480px' }}
+          >
+            {/* Close */}
+            {!submitSuccess && (
+              <button
+                onClick={() => setShowPreRegister(false)}
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '18px',
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255,255,255,0.5)',
+                  fontSize: '22px',
+                  cursor: 'pointer',
+                  lineHeight: 1,
+                }}
+              >
+                ×
+              </button>
+            )}
+
+            {!submitSuccess ? (
+              <>
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: '#fff',
+                  marginBottom: '8px',
+                }}>
+                  Pre-Register for Early Access
+                </h3>
+                <p style={{
+                  fontSize: '14px',
+                  color: 'rgba(255,255,255,0.5)',
+                  marginBottom: '28px',
+                  lineHeight: 1.6,
+                }}>
+                  Be among the first to get Campus Mytra! Enter your details and we'll send you the APK as soon as it's ready.
+                </p>
+
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* Name Field */}
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: 'rgba(255,255,255,0.7)',
+                      marginBottom: '6px',
+                    }}>
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your name"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        fontSize: '14px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s',
+                        boxSizing: 'border-box',
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#7c3aed'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    />
+                  </div>
+
+                  {/* Email Field */}
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: 'rgba(255,255,255,0.7)',
+                      marginBottom: '6px',
+                    }}>
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="you@example.com"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        fontSize: '14px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s',
+                        boxSizing: 'border-box',
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#7c3aed'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    />
+                  </div>
+
+                  {/* Error Message */}
+                  {error && (
+                    <div style={{
+                      padding: '10px 14px',
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      borderRadius: '8px',
+                      color: '#ef4444',
+                      fontSize: '13px',
+                    }}>
+                      {error}
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-silver-glass"
+                    style={{
+                      marginTop: '8px',
+                      width: '100%',
+                      justifyContent: 'center',
+                      opacity: isSubmitting ? 0.7 : 1,
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Pre-Register Now'}
+                  </button>
+                </form>
+              </>
+            ) : (
+              /* Success Message */
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  margin: '0 auto 20px',
+                  background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 0 30px rgba(34, 197, 94, 0.3)',
+                }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: '#fff',
+                  marginBottom: '12px',
+                }}>
+                  Welcome to Campus Mytra! 🎉
+                </h3>
+                
+                <p style={{
+                  fontSize: '15px',
+                  color: 'rgba(255,255,255,0.6)',
+                  marginBottom: '24px',
+                  lineHeight: 1.7,
+                }}>
+                  Thank you for pre-registering! We'll send the APK to <strong style={{ color: '#c4b5fd' }}>{formData.email}</strong> very early. Get ready to compete with your campus!
+                </p>
+
+                <button
+                  onClick={() => setShowPreRegister(false)}
+                  className="btn-silver-glass"
+                  style={{
+                    width: '100%',
+                    justifyContent: 'center',
+                  }}
+                >
+                  Got it!
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       )}
       
     </>
