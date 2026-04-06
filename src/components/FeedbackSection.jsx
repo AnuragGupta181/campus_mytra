@@ -54,7 +54,7 @@ export default function FeedbackSection() {
         overflow: 'hidden',
       }}
     >
-       
+
 
       {/* Decorative hero.png background */}
       <div style={{
@@ -204,7 +204,7 @@ export default function FeedbackSection() {
               }}
             >
               {/* Name & Email */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.5)', marginBottom: '8px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                     Name

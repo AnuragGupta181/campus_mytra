@@ -500,19 +500,40 @@ export default function DownloadSection() {
                   marginBottom: '24px',
                   lineHeight: 1.7,
                 }}>
-                  Thank you for pre-registering! We'll send the APK to <strong style={{ color: '#c4b5fd' }}>{formData.email}</strong> very early. Get ready to compete with your campus!
+                  Thank you for pre-registering! You can now download the APK directly. Get ready to compete with your campus!
                 </p>
 
-                <button
-                  onClick={() => setShowPreRegister(false)}
-                  className="btn-silver-glass"
-                  style={{
-                    width: '100%',
-                    justifyContent: 'center',
-                  }}
-                >
-                  Got it!
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <a
+                    href="https://drive.google.com/file/d/1_SfDvznEONsYbIjN4IjzJpwS3w4opSiY/view?usp=drive_link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-silver-glass"
+                    style={{
+                      width: '100%',
+                      justifyContent: 'center',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download APK
+                  </a>
+                  
+                  <button
+                    onClick={() => setShowPreRegister(false)}
+                    className="btn-silver-glass"
+                    style={{
+                      width: '100%',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             )}
           </div>
