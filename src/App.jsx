@@ -42,8 +42,9 @@ export default function App() {
 
         <BetaSection />
         <DownloadSection />
-        <Screenshorts />
+        
         <FeedbackSection />
+        <Screenshorts />
         <Footer />
       </div>
     </>
