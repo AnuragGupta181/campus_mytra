@@ -67,13 +67,22 @@ export default function HeroSection() {
           </p>
 
           <h1 className="font-doto text-[clamp(3rem,9vw,8rem)] sm:text-[clamp(3.5rem,13vw,11rem)] font-black leading-[0.92] tracking-[0.06em] text-white drop-shadow-[0_0_40px_rgba(0,0,0,0.3)]">
-            <ColourfulText text="CAMPUS MYTRA" />
+            <div className="flex flex-col gap-5 lg:flex-row lg:flex">
+            <div className=" ">
+            <ColourfulText text="CAMPUS " />
+            </div>
+            <div className="">
+            <ColourfulText text="MYTRA" />
+            </div>
+            </div>
             {/* <AuroraText>CAMPUS MYTRA</AuroraText> */}
           </h1>
 
           <div className="mt-10 flex flex-col sm:flex-col items-center gap-4 sm:gap-6">
             <a
-              href="#download"
+              href="https://drive.google.com/file/d/1_SfDvznEONsYbIjN4IjzJpwS3w4opSiY/view?usp=drive_link"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950"
             >
               <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#7C3AED_0%,#2563EB_50%,#7C3AED_100%)]" />
