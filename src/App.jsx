@@ -36,12 +36,13 @@ export default function App() {
       >
         <Navbar />
         <HeroSection />
-        <Screenshorts />
+
         <ScrollStack />
         {/* <ScreenshotsSection /> */}
 
         <BetaSection />
         <DownloadSection />
+        <Screenshorts />
         <FeedbackSection />
         <Footer />
       </div>
