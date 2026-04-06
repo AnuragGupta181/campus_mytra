@@ -30,10 +30,11 @@ const Skiper30 = () => {
 
   useEffect(() => {
     const lenis = new Lenis();
+    let rafId;
 
     const raf = (time) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     };
 
     const resize = () => {
@@ -41,11 +42,13 @@ const Skiper30 = () => {
     };
 
     window.addEventListener("resize", resize);
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
     resize();
 
     return () => {
       window.removeEventListener("resize", resize);
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
     };
   }, []);
 
@@ -57,17 +60,17 @@ const Skiper30 = () => {
       >
         <Column images={[images[0], images[1], images[2]]} y={y} />
         <Column images={[images[3], images[4], images[5]]} y={y2} />
-        <Column images={[images[6], images[1], images[2]]} y={y3} />
-        <Column images={[images[3], images[4], images[5]]} y={y4} />
+        <Column images={[images[6], images[1], images[2]]} y={y3} className="hidden md:flex" />
+        <Column images={[images[3], images[4], images[5]]} y={y4} className="hidden md:flex" />
       </div>
     </main>
   );
 };
 
-const Column = ({ images, y }) => {
+const Column = ({ images, y, className = "" }) => {
   return (
     <motion.div
-      className="relative -top-[45%] flex h-full w-1/4 min-w-[250px] flex-col gap-[2vw] first:top-[-45%] [&:nth-child(2)]:top-[-95%] [&:nth-child(3)]:top-[-45%] [&:nth-child(4)]:top-[-75%]"
+      className={`relative -top-[45%] flex h-full w-1/2 md:w-1/4 min-w-[150px] md:min-w-[250px] flex-col gap-[2vw] first:top-[-45%] [&:nth-child(2)]:top-[-95%] [&:nth-child(3)]:top-[-45%] [&:nth-child(4)]:top-[-75%] ${className}`}
       style={{ y }}
     >
       {images.map((src, i) => (
@@ -75,7 +78,7 @@ const Column = ({ images, y }) => {
           <img
             src={`${src}`}
             alt="image"
-            className="pointer-events-none object-cover"
+            className="pointer-events-none object-cover h-full w-full"
           />
         </div>
       ))}
