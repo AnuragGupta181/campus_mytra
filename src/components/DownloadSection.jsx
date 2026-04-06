@@ -22,7 +22,7 @@ const CHIP_INFO = [
 export default function DownloadSection() {
   const [showGuide, setShowGuide] = useState(false);
   const [showPreRegister, setShowPreRegister] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [formData, setFormData] = useState({ name: '', studentNo: '', email: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -43,7 +43,7 @@ export default function DownloadSection() {
     setShowPreRegister(true);
     setSubmitSuccess(false);
     setError('');
-    setFormData({ name: '', email: '' });
+    setFormData({ name: '', studentNo: '', email: '' });
   };
 
   const handleSubmit = async (e) => {
@@ -52,16 +52,21 @@ export default function DownloadSection() {
     setIsSubmitting(true);
 
     // Validate form
-    if (!formData.name.trim() || !formData.email.trim()) {
+    if (!formData.name.trim() || !formData.studentNo.trim() || !formData.email.trim()) {
       setError('Please fill in all fields');
       setIsSubmitting(false);
       return;
     }
 
+    if (!/^\d{7}$/.test(formData.studentNo.trim())) {
+      setError('Student number must be exactly 7 digits');
+      setIsSubmitting(false);
+      return;
+    }
+
     // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
+    if (!formData.email.endsWith('@akgec.ac.in')) {
+      setError('Email address must end with @akgec.ac.in');
       setIsSubmitting(false);
       return;
     }
@@ -84,7 +89,7 @@ export default function DownloadSection() {
 
       // Show success message
       setSubmitSuccess(true);
-      setFormData({ name: '', email: '' });
+      setFormData({ name: '', studentNo: '', email: '' });
     } catch (err) {
       console.error('Error submitting form:', err);
       setError(err.message || 'Failed to submit. Please try again.');
@@ -95,7 +100,22 @@ export default function DownloadSection() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      const newFormData = { ...prev, [name]: value };
+      
+      if (name === 'name' || name === 'studentNo') {
+        const firstName = (newFormData.name || '').split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
+        const studentNoStr = newFormData.studentNo || '';
+        
+        if (firstName || studentNoStr) {
+          newFormData.email = `${firstName}${studentNoStr}@akgec.ac.in`;
+        } else {
+          newFormData.email = '';
+        }
+      }
+      
+      return newFormData;
+    });
     setError('');
   };
 
@@ -400,6 +420,42 @@ export default function DownloadSection() {
                     />
                   </div>
 
+                  {/* Student Number Field */}
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: 'rgba(255,255,255,0.7)',
+                      marginBottom: '6px',
+                    }}>
+                      Student Number
+                    </label>
+                    <input
+                      type="text"
+                      name="studentNo"
+                      value={formData.studentNo}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 24311XX"
+                      maxLength={7}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '12px 16px',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        fontSize: '14px',
+                        outline: 'none',
+                        transition: 'border-color 0.2s',
+                        boxSizing: 'border-box',
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#7c3aed'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                    />
+                  </div>
+
                   {/* Email Field */}
                   <div>
                     <label style={{
@@ -416,7 +472,7 @@ export default function DownloadSection() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="you@example.com"
+                      placeholder="NameStudentNo@akgec.ac.in"
                       required
                       style={{
                         width: '100%',

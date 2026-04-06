@@ -66,7 +66,7 @@ export default function BetaSection() {
           </p>
         </div>
 
-        <div className="grid gap-22 lg:grid-cols-[2.2fr_0.7fr] sm:grid-rows-[2.2fr_2.1fr]  lg:items-center">
+        <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16 lg:items-center">
           <div ref={leftRef} className="scroll-fade grid gap-4 sm:grid-cols-2">
             {PERKS.map((perk) => (
               <div
@@ -79,17 +79,19 @@ export default function BetaSection() {
               </div>
             ))}
 
-            <div className="col-span-full pt-2">
-              <a href="#download" className="btn-silver-glass inline-flex w-full justify-center px-6 py-4 text-sm font-semibold">
-                Claim Your Spot →
-              </a>
-            </div>
+
           </div>
 
           <div ref={rightRef} className="scroll-fade relative overflow-hidden flex items-center justify-center">
-            <video autoPlay muted controls src={explain1} className="w-full h-auto object-contain" />
+            <video autoPlay muted controls src={explain1} className="w-full max-h-[500px] object-contain rounded-xl" />
             {/* <video controls src={explain2} className="w-32 h-32 object-cover rounded-lg" /> */}
           </div>
+        </div>
+
+        <div className="flex justify-center w-full mt-4 lg:mt-0">
+          <a href="#download" className="btn-silver-glass inline-flex justify-center px-10 py-5 text-base font-semibold sm:w-auto w-full transition-transform hover:scale-105">
+            Claim Your Spot →
+          </a>
         </div>
       </div>
     </section>
